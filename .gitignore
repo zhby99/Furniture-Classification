@@ -1,0 +1,6 @@
+#image files
+*.jpg
+
+#npy and pickle files
+*.npy
+*.p
