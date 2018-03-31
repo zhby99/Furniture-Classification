@@ -1,0 +1,6 @@
+# image files
+*.jpg
+
+# data files
+*.npy
+*.p
