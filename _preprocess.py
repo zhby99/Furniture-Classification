@@ -4,7 +4,7 @@ import numpy as np
 from scipy import misc
 import cv2
 
-def preprocess_train():
+def preprocess_train(truncated = True):
 	images = {}
 	with open('imaterialist-challenge-furniture-2018/train.json') as json_data:
 	    d = json.load(json_data)
@@ -21,14 +21,15 @@ def preprocess_train():
 		if d=='.DS_Store': continue
 		idx = d.split('.')[0]
 		img = cv2.imread("imaterialist-challenge-furniture-2018/train_data/"+d)
-		print(idx)
+		if img is None: continue
 		temp = cv2.resize(img,(227,227), interpolation=cv2.INTER_CUBIC)
 		features.append(temp)
-		#cv2.imshow('img',temp)
-		#cv2.waitKey(0)
 		labels.append(images[int(idx)])
-
-	return features, labels
+		if len(features) % 2000 == 0:
+			print("Finished processing {}".format(len(features)))
+		if len(features) % 50000 == 0 and truncated is True:
+			return np.array(features),np.array(labels)
+	return np.array(features),np.array(labels)
 
 def preprocess_valid():
 	images = {}
@@ -53,4 +54,4 @@ def preprocess_valid():
 		#cv2.waitKey(0)
 		labels.append(images[int(idx)])
 
-	return features, labels
+	return np.array(features), np.array(labels)
