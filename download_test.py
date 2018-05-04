@@ -8,7 +8,6 @@ os.chdir('imaterialist-challenge-furniture-2018/')
 valid_date = json.load(open('test.json'))
 
 images_arr = valid_date['images']
-annotations_arr = valid_date['annotations']
 os.makedirs('test_date')
 for img in images_arr:
     if img['image_id'] % 1000 == 0:
