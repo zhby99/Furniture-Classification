@@ -47,7 +47,6 @@ class_names = image_datasets['train'].classes
 
 use_gpu = torch.cuda.is_available()
 
-def test_model(model):
 
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
