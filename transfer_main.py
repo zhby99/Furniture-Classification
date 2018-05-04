@@ -15,9 +15,11 @@ import copy
 
 # Data augmentation and normalization for training
 # Just normalization for validation
+IMAGE_SIZE = 224
 data_transforms = {
     'train': transforms.Compose([
-        transforms.RandomResizedCrop(224),
+        transforms.Resize((IMAGE_SIZE + 20, IMAGE_SIZE + 20)),
+        transforms.RandomCrop((IMAGE_SIZE, IMAGE_SIZE)),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -34,8 +36,8 @@ data_dir = 'dataset'
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
                                           data_transforms[x])
                   for x in ['train', 'val']}
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=128,
-                                             shuffle=True, num_workers=4)
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=16,
+                                             shuffle=True, num_workers=8)
               for x in ['train', 'val']}
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
@@ -114,13 +116,12 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     model.load_state_dict(best_model_wts)
     return model
 
-model_conv = torchvision.models.resnet18(pretrained=True)
+model_conv = torchvision.models.resnet152(pretrained=True)
 for param in model_conv.parameters():
     param.requires_grad = False
 
 # Parameters of newly constructed modules have requires_grad=True by default
-num_ftrs = model_conv.fc.in_features
-model_conv.fc = nn.Linear(num_ftrs, 128)
+model_conv.fc = nn.Sequential(nn.Dropout(), nn.Linear(model_conv.fc.in_features, 128))
 
 if use_gpu:
     model_conv = model_conv.cuda()
@@ -134,4 +135,4 @@ optimizer_conv = optim.SGD(model_conv.fc.parameters(), lr=0.001, momentum=0.9)
 # Decay LR by a factor of 0.1 every 7 epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
 
-model_conv = train_model(model_conv, criterion, optimizer_conv, exp_lr_scheduler, num_epochs=25)
+model_conv = train_model(model_conv, criterion, optimizer_conv, exp_lr_scheduler, num_epochs=10)
