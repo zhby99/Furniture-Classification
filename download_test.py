@@ -13,7 +13,7 @@ for img in images_arr:
     if img['image_id'] % 1000 == 0:
         print("Finished {} out of 12,000".format(img['image_id']))
     try:
-        r = requests.get(img['url'][0],timeout=10)
+        r = requests.get(img['url'][0], allow_redirects=True, timeout=60)
         folder_path = 'test_data/'
         with open(folder_path+str(img['image_id'])+'.jpg','wb') as f:
             f.write(r.content)
