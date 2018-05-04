@@ -13,6 +13,9 @@ import time
 import os
 import copy
 
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
 # Data augmentation and normalization for training
 # Just normalization for validation
 IMAGE_SIZE = 224
@@ -44,12 +47,16 @@ class_names = image_datasets['train'].classes
 
 use_gpu = torch.cuda.is_available()
 
+def test_model(model):
+
+
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
-
+    loss_list = []
+    acc_list = []
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
@@ -96,7 +103,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects / dataset_sizes[phase]
-
+            loss_list.append(epoch_loss)
+            acc_list.append(epoch_acc)
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
 
@@ -113,15 +121,23 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     print('Best val Acc: {:4f}'.format(best_acc))
 
     # load best model weights
+    plt.figure()
+    plt.plot(loss_list)
+    plt.savefig("visual/loss.png")
+    plt.figure()
+    plt.plot(acc_list)
+    plt.savefig("visual/acc.png")
     model.load_state_dict(best_model_wts)
+    torch.save(best_model_wts, 'best_weight.pth')
     return model
 
-model_conv = torchvision.models.resnet152(pretrained=True)
+model_conv = torchvision.models.densenet201(pretrained=True)
 for param in model_conv.parameters():
     param.requires_grad = False
 
 # Parameters of newly constructed modules have requires_grad=True by default
-model_conv.fc = nn.Sequential(nn.Dropout(), nn.Linear(model_conv.fc.in_features, 128))
+model_conv.classifier = nn.Linear(model_conv.classifier.in_features, 128)
+
 
 if use_gpu:
     model_conv = model_conv.cuda()
@@ -130,7 +146,7 @@ criterion = nn.CrossEntropyLoss()
 
 # Observe that only parameters of final layer are being optimized as
 # opoosed to before.
-optimizer_conv = optim.SGD(model_conv.fc.parameters(), lr=0.001, momentum=0.9)
+optimizer_conv = optim.SGD(model_conv.classifier.parameters(), lr=0.001, momentum=0.9)
 
 # Decay LR by a factor of 0.1 every 7 epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)

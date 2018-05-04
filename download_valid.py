@@ -9,7 +9,7 @@ valid_date = json.load(open('validation.json'))
 
 images_arr = valid_date['images']
 annotations_arr = valid_date['annotations']
-os.makedirs('valid_date')
+os.makedirs('valid_data')
 for img in images_arr:
     if img['image_id'] % 1000 == 0:
         print("Finished {} out of 194,828".format(img['image_id']))

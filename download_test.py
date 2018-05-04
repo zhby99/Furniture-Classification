@@ -8,7 +8,7 @@ os.chdir('imaterialist-challenge-furniture-2018/')
 valid_date = json.load(open('test.json'))
 
 images_arr = valid_date['images']
-os.makedirs('test_date')
+os.makedirs('test_data')
 for img in images_arr:
     if img['image_id'] % 1000 == 0:
         print("Finished {} out of 12,000".format(img['image_id']))
