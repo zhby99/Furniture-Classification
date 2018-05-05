@@ -63,8 +63,7 @@ data_transforms = {
 }
 
 data_dir = 'dataset'
-image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
-                                          data_transforms[x])
+image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x.split('_')[0]), data_transforms[x])
                   for x in ['train', 'train_flip', 'val', 'val_flip']}
 dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=16,
                                              shuffle=True, num_workers=8)
