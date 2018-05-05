@@ -113,12 +113,6 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     print('Best val Acc: {:4f}'.format(best_acc))
 
     # load best model weights
-    plt.figure()
-    plt.plot(loss_list)
-    plt.savefig("visual/loss.png")
-    plt.figure()
-    plt.plot(acc_list)
-    plt.savefig("visual/acc.png")
     model.load_state_dict(best_model_wts)
     torch.save(best_model_wts, 'best_weight.pth')
     return model
