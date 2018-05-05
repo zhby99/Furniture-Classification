@@ -28,3 +28,16 @@ def preprocess():
 		labels.append(images[int(idx)])
 
 	return features, labels
+
+
+def test_reprocess():
+        path = 'dataset/test/2/'
+        data = os.listdir("dataset/test/1")
+        for d in data:
+            if d=='.DS_Store': continue
+            idx = d.split('.')[0]
+            img = cv2.imread("dataset/test/1/"+d)
+            if img is None:continue
+            cv2.imwrite(path + d, img)
+
+test_reprocess()

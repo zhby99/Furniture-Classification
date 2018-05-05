@@ -20,7 +20,7 @@ def valid_reprocess():
             cv2.imwrite(path + str(images[int(idx)]) + '/' + d, img)
 
 def test_reprocess():
-	images = {}
+		images = {}
         path = 'dataset/test/'
         with open('imaterialist-challenge-furniture-2018/test.json') as json_data:
             d = json.load(json_data)
