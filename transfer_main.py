@@ -105,15 +105,15 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                 # zero the parameter gradients
                 optimizer.zero_grad()
 
-                with torch.set_grad_enabled(phase == 'train'):
+                with torch.set_grad_enabled(True):
                     outputs = model(inputs)
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
 
                     # backward + optimize only if in training phase
-                    if phase == 'train':
-                        loss.backward()
-                        optimizer.step()
+                    # if phase == 'train':
+                    loss.backward()
+                    optimizer.step()
 
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
