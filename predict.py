@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import time
 import os
 import copy
+from tqdm import tqdm
 
 import torchvision.transforms.functional as F
 
