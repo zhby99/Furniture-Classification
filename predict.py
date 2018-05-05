@@ -95,7 +95,7 @@ def safe_stack_2array(a, b, dim=0):
 
 def test_model(model):
     prediction = None
-    for dataloader in dataloaders:
+    for dataloader in data_loaders:
         px = predict(model, dataloader)
         prediction = safe_stack_2array(prediction, px, dim=-1)
     return prediction
