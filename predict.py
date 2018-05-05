@@ -33,6 +33,7 @@ class HorizontalFlip(object):
 def get_model():
     print('[+] loading model... ', end='', flush=True)
     model = torchvision.models.densenet201(pretrained=True)
+    model.classifier = nn.Linear(model.classifier.in_features, 128)
     if use_gpu:
         model.cuda()
     print('done')
