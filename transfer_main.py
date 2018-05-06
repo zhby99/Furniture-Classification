@@ -92,7 +92,7 @@ def train_model(model, criterion, num_epochs=25):
             lr = 0.001
             optimizer = torch.optim.Adam(model.classifier.parameters(), lr=lr)
         else:
-            optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0.0001)
+            optimizer = torch.optim.Adam(model.classifier.parameters(), lr=lr, weight_decay=0.0001)
 
         # Each epoch has a training and validation phase
         for phase in ['train','train_flip', 'val', 'val_flip']:
