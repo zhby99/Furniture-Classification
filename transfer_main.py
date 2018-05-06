@@ -75,16 +75,24 @@ use_gpu = torch.cuda.is_available()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
+def train_model(model, criterion, scheduler, num_epochs=25):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
     loss_list = []
     acc_list = []
+    lr = 0.0
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
+        if epoch == 1:
+            lr = 0.00003
+        if epoch == 0:
+            lr = 0.001
+            optimizer = torch.optim.Adam(model.classifier.parameters(), lr=lr)
+        else:
+            optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0.0001)
 
         # Each epoch has a training and validation phase
         for phase in ['train','train_flip', 'val', 'val_flip']:
@@ -153,13 +161,13 @@ model_conv.classifier = nn.Linear(model_conv.classifier.in_features, 128)
 if use_gpu:
     model_conv = model_conv.cuda()
 
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss().cuda()
 
 # Observe that only parameters of final layer are being optimized as
 # opoosed to before.
-optimizer_conv = optim.SGD(model_conv.classifier.parameters(), lr=0.001, momentum=0.9)
+# optimizer_conv = optim.SGD(model_conv.classifier.parameters(), lr=0.001, momentum=0.9)
 
 # Decay LR by a factor of 0.1 every 7 epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=5, gamma=0.1)
 
-model_conv = train_model(model_conv, criterion, optimizer_conv, exp_lr_scheduler, num_epochs=10)
+model_conv = train_model(model_conv, criterion, exp_lr_scheduler, num_epochs=20)
