@@ -75,7 +75,7 @@ use_gpu = torch.cuda.is_available()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-def train_model(model, criterion, scheduler, num_epochs=25):
+def train_model(model, criterion, num_epochs=25):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -97,7 +97,7 @@ def train_model(model, criterion, scheduler, num_epochs=25):
         # Each epoch has a training and validation phase
         for phase in ['train','train_flip', 'val', 'val_flip']:
             # if phase == 'train':
-            scheduler.step()
+            # scheduler.step()
             model.train()  # Set model to training mode
             # else:
             #     model.eval()  # Set model to evaluate mode
@@ -168,6 +168,6 @@ criterion = nn.CrossEntropyLoss().cuda()
 # optimizer_conv = optim.SGD(model_conv.classifier.parameters(), lr=0.001, momentum=0.9)
 
 # Decay LR by a factor of 0.1 every 7 epochs
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=5, gamma=0.1)
+# exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=5, gamma=0.1)
 
-model_conv = train_model(model_conv, criterion, exp_lr_scheduler, num_epochs=20)
+model_conv = train_model(model_conv, criterion, num_epochs=20)
