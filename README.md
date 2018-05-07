@@ -1,20 +1,22 @@
 # Furniture-Classification
 iMaterialist Challenge (Furniture) at FGVC5, Kaggle Competition
 
-### Pre-trained Model
-For our first trial, we will use AlexNet to do transfer learning on this task.
+### Data Downloader
+We have `download.py` for training data, `downloadd_valid.py` for validation data and `download_test.py` for testing data, an example running is showed below.
+```bash
+python download.py
+```
 
-1. Download [AlexNet weights](https://d17h27t6h515a5.cloudfront.net/topher/2016/October/580d880c_bvlc-alexnet/bvlc-alexnet.npy), and save the `bvlc-alexnet.npy`
- on the main repo.
-2. In `alexnet.py`, we defined the feature extraction version of AlexNet, where we simple adopt the weights for all the layers before the last fully connected one, also
-  we stop back-prop for previous layers during our transfer learning. We modified the output for the last
-  fully connected layer to fit the number of our task's classes, which is 128.
-
-### Pre-Processing
-1. Download training data, validation data and testing data by our script, in `download.ipynb`. For example, the jpg files of training data will be stored
- in `imaterialist-challenge-furniture-2018/train_data/`.
-
+### Data Preprocess
+1. For pytorch model, use `dataset_gen.py` for making 128 directories for training set and validation set and putting the valid images into these folders according to their labels. `preprocess.py` is used to putting all valid image files into the newly created folder.
+2. For tensorflow model, run `preprocess_main.py` to preprocess the images and store them in npy file. Also, download [AlexNet weights](https://d17h27t6h515a5.cloudfront.net/topher/2016/October/580d880c_bvlc-alexnet/bvlc-alexnet.npy), and save the `bvlc-alexnet.npy`
 
 ### Training
-1. After getting `X_train`, `y_train`, `X_val`, `y_val` from preprocessing. We can run `pipeline.ipynb` to train our fine-tuned model based on the training set
- and evaluate our model on the validation set.
+1. For pytorch model, run `python transfer_main.py` to train the model and save the weights into `best_weight.pth`.
+2. For tensorflow model, open `pipeline.ipynb` for training.
+
+### Testing
+After generate `best_weight.pth` file, run `python predict.py` to load the weight and make prediction on testing set, the result of prediction will be stored in `test_prediction.pth`.
+
+### Submission File for Kaggle
+Run `python gen_csv.py` to map index of training with testing and generating csv file for submission, in `submission.csv`.
