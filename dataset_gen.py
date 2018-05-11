@@ -57,4 +57,4 @@ def train_repreprocess():
             if os.path.isdir(path + str(images[int(idx)])) is False: os.makedirs(path + str(images[int(idx)]), mode=0o777)
             cv2.imwrite(path + str(images[int(idx)]) + '/' + d, img)
 
-valid_repreprocess()
+train_repreprocess()
